@@ -3,6 +3,9 @@ base.directory <- dirname(parent.frame(2)$ofile)
 setwd(base.directory)
 
 ## Download the source data and read it into R if necessary
+## Loads Data Tables NEI and SCC into R's environment
+## The script getSourceData.R is available here:
+## https://github.com/marcusrw/ExData_Plotting2
 source("getSourceData.R")
 setwd(base.directory)
 
@@ -15,9 +18,17 @@ if (!exists("vehicleSCCs")){
 }
 
 ## Subset the Baltimore Table by the vehicle SCCs
-NEIVehiclesBaltimore = filter(NEIBaltimore,SCC %in% vehicleSCCs)
-library(data.table)
-yearlyTotalsBaltVehicles = data.table(NEIVehiclesBaltimore)[,list(vehicleEmissionsByYear = sum(Emissions),numObservations = .N),by=year]
+## Skip the computations if the result is already in the R environment
+if (!exists("yearlyTotalsBaltVehicles")){
+    library(dplyr)
+    NEIdf = tbl_df(NEI)
+    NEIBaltimore = filter(NEIdf,fips == "24510")
+    NEIVehiclesBaltimore = filter(NEIBaltimore,SCC %in% vehicleSCCs)
+
+    ## Get the sum of all vehicle emissions, separated by year
+    library(data.table)
+    yearlyTotalsBaltVehicles = data.table(NEIVehiclesBaltimore)[,list(vehicleEmissionsByYear = sum(Emissions),numObservations = .N),by=year]
+}
 
 filename = "plot5.png"
 png(filename = filename , width = 480, height = 480,bg = "transparent")

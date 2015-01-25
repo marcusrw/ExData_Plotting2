@@ -3,14 +3,19 @@ base.directory <- dirname(parent.frame(2)$ofile)
 setwd(base.directory)
 
 ## Download the source data and read it into R if necessary
+## Loads Data Tables NEI and SCC into R's environment
+## The script getSourceData.R is available here:
+## https://github.com/marcusrw/ExData_Plotting2
 source("getSourceData.R")
 setwd(base.directory)
 
 ## Compute the sum of emissions from all sources in
 ## Baltimore City, Maryland for each year.
+library(dplyr)
 NEIdf = tbl_df(NEI)
 NEIBaltimore = filter(NEIdf,fips == "24510")
 
+## Skip the computations if the result is already in the R environment
 if (!exists("yearlyTotalsBaltimore")){
     library(data.table)
     yearlyTotalsBaltimore = data.table(NEIBaltimore)[,list(emissionsByYear = sum(Emissions),numObservations = .N),by=year]

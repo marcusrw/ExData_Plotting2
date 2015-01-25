@@ -37,6 +37,9 @@ if (!file.exists("SCC.csv")){
     write.csv(SCC,file = "SCC.csv")
 }
 
-## Return to main directory
+## Return to main directory, and clean up unneeded variables
 setwd("./../")
 rm(this.directory)
+rm(fileURL)
+rm(zipFilePath)
+rm(unzippedFolderName)
