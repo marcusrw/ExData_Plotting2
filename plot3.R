@@ -12,6 +12,11 @@ setwd(base.directory)
 ## Separate Total emissions by type
 ## Skip the computations if the result is already in the R environment
 if (!exists("totalsBaltimoreByYearAndType")){
+    ## Subset by the Baltimore County code
+    library(dplyr)
+    NEIdf = tbl_df(NEI)
+    NEIBaltimore = filter(NEIdf,fips == "24510")
+
     library(data.table)
     totalsBaltimoreByYearAndType = data.table(NEIBaltimore)[,list(totalEmissions = sum(Emissions),numObservations = .N),by=list(year,type)]
 }

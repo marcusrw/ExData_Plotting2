@@ -22,8 +22,16 @@ if (!exists("yearlyTotalsCoal")){
     anyMentionsCoal = unique(c(shortNameMentionsCoal,eiSectorMentionsCoal,sccLevelThreeMentionsCoal,sccLevelFourMentionsCoal))
     sccsMentioningCoal = SCC$SCC[anyMentionsCoal]
 
+    ## Clean up garbage, anything we won't use again
+    rm(shortNameMentionsCoal)
+    rm(eiSectorMentionsCoal)
+    rm(sccLevelThreeMentionsCoal)
+    rm(sccLevelFourMentionsCoal)
+    rm(anyMentionsCoal)
+
     ## Filter the original dataset by sccsMentioningCoal
     library(dplyr)
+    NEIdf = tbl_df(NEI)
     NEICoal = filter(NEIdf,SCC %in% sccsMentioningCoal)
 
     ## Get the sum of all coal emissions, separated by year

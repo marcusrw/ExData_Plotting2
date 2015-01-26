@@ -9,18 +9,19 @@ setwd(base.directory)
 source("getSourceData.R")
 setwd(base.directory)
 
-## Compute the sum of emissions from all sources in
-## Baltimore City, Maryland for each year.
-library(dplyr)
-NEIdf = tbl_df(NEI)
-NEIBaltimore = filter(NEIdf,fips == "24510")
-
 ## Skip the computations if the result is already in the R environment
 if (!exists("yearlyTotalsBaltimore")){
+    ## Subset by the Baltimore County code
+    library(dplyr)
+    NEIdf = tbl_df(NEI)
+    NEIBaltimore = filter(NEIdf,fips == "24510")
+
+    ## Take the sum by year of the emissions
     library(data.table)
     yearlyTotalsBaltimore = data.table(NEIBaltimore)[,list(emissionsByYear = sum(Emissions),numObservations = .N),by=year]
 }
 
+## Generate a plot of the total emissions by year in Baltimore City, Maryland
 filename = "plot2.png"
 png(filename = filename , width = 480, height = 480,bg = "transparent")
 plot(yearlyTotalsBaltimore$year,yearlyTotalsBaltimore$emissionsByYear,type = "l",main = "Change in PM2.5 Emissions - Baltimore City, Maryland",ylab = "Total Emissions (tons)",xlab="Year",lwd=3)
